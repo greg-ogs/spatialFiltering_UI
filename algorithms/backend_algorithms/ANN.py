@@ -42,10 +42,10 @@ class Stage1ANN:  # Classification stage
     def load_data(self):
         # Load from MySQL
         self.mydb = mysql.connect(
-            host="172.17.0.2",  # Use docker inspect <docker id > for ip
+            host="127.0.0.1",  # host="172.17.0.2",  # Use docker inspect <docker id > for ip
             user="user",
             database="dataset",
-            password="userpass", port=3306
+            password="userpass", port=3307
         )
 
         self.mycursor = self.mydb.cursor()
@@ -61,8 +61,8 @@ class Stage1ANN:  # Classification stage
 
         px = pd.DataFrame(self.x)
         py = pd.DataFrame(self.y)
-        print(px.info)
-        print(py.info)
+        # print(px.info)
+        # print(py.info)
 
     def set_model(self):
         lr_schedule = ExponentialDecay(
@@ -88,8 +88,8 @@ class Stage1ANN:  # Classification stage
 
     def train(self):
         # Create a callback that saves the model's weights
-        cp_callback = [keras.callbacks.ModelCheckpoint(filepath='model.{epoch:03d}-{val_accuracy:.2f}.keras',
-                                                       monitor='val_accuracy', verbose=1, save_freq='epoch'),
+        cp_callback = [# keras.callbacks.ModelCheckpoint(filepath='model.{epoch:03d}-{val_accuracy:.2f}.keras',
+        #                                                monitor='val_accuracy', verbose=1, save_freq='epoch'),
                        # Path of the callback file, monitor is for monitoring a variable and use in conjunction with
                        # mode to choose the best epoch qhe use save_best_only
                        keras.callbacks.EarlyStopping(patience=5, monitor='val_loss', verbose=1,
@@ -100,25 +100,25 @@ class Stage1ANN:  # Classification stage
 
         history = self.model.fit(self.x, self.y, epochs=20, initial_epoch=0, batch_size=1, verbose=1,
                                  validation_split=0.2, callbacks=cp_callback)
-        self.model.save('model.keras')
+        # self.model.save('model.keras')
         accuracy = self.model.evaluate(self.x, self.y)
         acc = history.history['accuracy']
         val_acc = history.history['val_accuracy']
         loss = history.history['loss']
         val_loss = history.history['val_loss']
         epochs_range = range(20)
-        plt.figure(figsize=(8, 8))
-        plt.subplot(1, 2, 1)
-        plt.plot(epochs_range, acc, label='Training Accuracy')
-        plt.plot(epochs_range, val_acc, label='Validation Accuracy')
-        plt.legend(loc='lower right')
-        plt.title('Training and Validation Accuracy')
-        plt.subplot(1, 2, 2)
-        plt.plot(epochs_range, loss, label='Training Loss')
-        plt.plot(epochs_range, val_loss, label='Validation Loss')
-        plt.legend(loc='upper right')
-        plt.title('Training and Validation Loss')
-        plt.show()
+        # plt.figure(figsize=(8, 8))
+        # plt.subplot(1, 2, 1)
+        # plt.plot(epochs_range, acc, label='Training Accuracy')
+        # plt.plot(epochs_range, val_acc, label='Validation Accuracy')
+        # plt.legend(loc='lower right')
+        # plt.title('Training and Validation Accuracy')
+        # plt.subplot(1, 2, 2)
+        # plt.plot(epochs_range, loss, label='Training Loss')
+        # plt.plot(epochs_range, val_loss, label='Validation Loss')
+        # plt.legend(loc='upper right')
+        # plt.title('Training and Validation Loss')
+        # plt.show()
 
     def convert(self):
         converter = tf.lite.TFLiteConverter.from_saved_model('model.keras')  # path to the SavedModel directory
@@ -144,10 +144,11 @@ class Stage1ANN:  # Classification stage
                     print(str(i) + ' ' + str(j) + ' are x - y possible coords')
                     break
 
+
 # if __name__ == "__main__":
 #     available_gpu()
-# stage1 = Stage1ANN()
-# stage1.load_data()
+#     stage1 = Stage1ANN()
+#     stage1.load_data()
 # stage1.prepare_data()
 # stage1.set_model()
 # stage1.train()
