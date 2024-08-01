@@ -98,15 +98,15 @@ class Stage1ANN:  # Classification stage
                        # and mode is to stop when the quantity monitored has stopped increasing (max)
                        ]
 
-        history = self.model.fit(self.x, self.y, epochs=20, initial_epoch=0, batch_size=1, verbose=1,
+        history = self.model.fit(self.x, self.y, epochs=1, initial_epoch=0, batch_size=1, verbose=1,
                                  validation_split=0.2, callbacks=cp_callback)
-        # self.model.save('model.keras')
-        accuracy = self.model.evaluate(self.x, self.y)
-        acc = history.history['accuracy']
-        val_acc = history.history['val_accuracy']
-        loss = history.history['loss']
-        val_loss = history.history['val_loss']
-        epochs_range = range(20)
+        self.model.save('model.keras')
+        # accuracy = self.model.evaluate(self.x, self.y)
+        # acc = history.history['accuracy']
+        # val_acc = history.history['val_accuracy']
+        # loss = history.history['loss']
+        # val_loss = history.history['val_loss']
+        # epochs_range = range(20)
         # plt.figure(figsize=(8, 8))
         # plt.subplot(1, 2, 1)
         # plt.plot(epochs_range, acc, label='Training Accuracy')
